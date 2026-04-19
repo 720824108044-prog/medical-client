@@ -1,0 +1,2866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medi Client — Smart Healthcare Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #0a9396;
+  --teal-light: #94d2bd;
+  --teal-dark: #005f73;
+  --mint: #e9f5f5;
+  --blue: #0077b6;
+  --blue-light: #90e0ef;
+  --sky: #caf0f8;
+  --emerald: #2d6a4f;
+  --green-light: #b7e4c7;
+  --coral: #ee6c4d;
+  --amber: #f4a261;
+  --white: #ffffff;
+  --off-white: #f8fffe;
+  --grey-50: #f0f4f8;
+  --grey-100: #e2e8f0;
+  --grey-300: #94a3b8;
+  --grey-500: #64748b;
+  --grey-700: #334155;
+  --grey-900: #0f172a;
+  --shadow-sm: 0 1px 3px rgba(0,95,115,0.08), 0 1px 2px rgba(0,95,115,0.04);
+  --shadow-md: 0 4px 16px rgba(0,95,115,0.12), 0 2px 6px rgba(0,95,115,0.06);
+  --shadow-lg: 0 12px 40px rgba(0,95,115,0.16), 0 4px 12px rgba(0,95,115,0.08);
+  --shadow-xl: 0 24px 60px rgba(0,95,115,0.2);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 999px;
+  --font-display: 'Sora', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--off-white);
+  color: var(--grey-900);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── PAGE SYSTEM ─── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-up { animation: fadeSlideUp 0.5s ease forwards; }
+.animate-up-delay-1 { animation: fadeSlideUp 0.5s ease 0.1s both; }
+.animate-up-delay-2 { animation: fadeSlideUp 0.5s ease 0.2s both; }
+.animate-up-delay-3 { animation: fadeSlideUp 0.5s ease 0.3s both; }
+
+/* ═══════════════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════════════ */
+#login-page {
+  background: linear-gradient(135deg, #005f73 0%, #0a9396 40%, #0077b6 100%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+#login-page.active { display: flex; }
+
+.login-bg-shapes {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.login-bg-shapes::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(148,210,189,0.25) 0%, transparent 70%);
+  top: -200px; right: -150px;
+  border-radius: 50%;
+}
+.login-bg-shapes::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(202,240,248,0.2) 0%, transparent 70%);
+  bottom: -100px; left: -100px;
+  border-radius: 50%;
+}
+
+.login-container {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 20px;
+  position: relative; z-index: 1;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: fadeSlideUp 0.6s ease both;
+}
+.login-logo {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  margin-bottom: 10px;
+}
+.login-logo-icon {
+  width: 52px; height: 52px;
+  background: white;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.login-logo-text {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+}
+.login-logo-text span { color: var(--teal-light); }
+.login-tagline {
+  color: rgba(255,255,255,0.75);
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 0.3px;
+}
+
+/* Language Button */
+.lang-btn {
+  position: fixed; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.2s;
+  z-index: 1000;
+}
+.lang-btn:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
+
+.lang-dropdown {
+  position: fixed; top: 56px; right: 20px;
+  background: white;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  z-index: 1001;
+  display: none;
+  min-width: 160px;
+}
+.lang-dropdown.open { display: block; animation: fadeSlideUp 0.2s ease; }
+.lang-option {
+  padding: 11px 18px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--grey-700);
+  display: flex; align-items: center; gap: 10px;
+  transition: background 0.15s;
+}
+.lang-option:hover { background: var(--mint); color: var(--teal-dark); }
+.lang-option.active { color: var(--teal); font-weight: 600; }
+
+/* Role Cards */
+.role-cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  width: 100%; max-width: 560px;
+  margin-bottom: 28px;
+  animation: fadeSlideUp 0.6s ease 0.1s both;
+}
+.role-card {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255,255,255,0.2);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-align: center;
+  color: white;
+}
+.role-card:hover {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+}
+.role-card.selected {
+  background: white;
+  border-color: white;
+  color: var(--teal-dark);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.role-icon { font-size: 36px; margin-bottom: 10px; display: block; }
+.role-title {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700;
+  margin-bottom: 4px;
+}
+.role-subtitle { font-size: 12px; opacity: 0.75; font-weight: 300; }
+.role-card.selected .role-subtitle { opacity: 0.6; }
+
+/* Login Form */
+.login-form-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 36px 36px;
+  width: 100%; max-width: 440px;
+  box-shadow: var(--shadow-xl);
+  animation: fadeSlideUp 0.6s ease 0.2s both;
+}
+.login-form-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 700;
+  color: var(--grey-900);
+  margin-bottom: 6px;
+}
+.login-form-subtitle { font-size: 13px; color: var(--grey-500); margin-bottom: 28px; }
+
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 13px; font-weight: 600;
+  color: var(--grey-700);
+  margin-bottom: 7px;
+}
+.form-input {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--grey-100);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--grey-900);
+  background: var(--grey-50);
+  outline: none;
+  transition: all 0.2s;
+}
+.form-input:focus {
+  border-color: var(--teal);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(10,147,150,0.1);
+}
+.input-hint { font-size: 11px; color: var(--grey-300); margin-top: 5px; }
+
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  letter-spacing: 0.3px;
+  margin-top: 8px;
+}
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,95,115,0.4); }
+.login-btn:active { transform: translateY(0); }
+
+.login-divider {
+  text-align: center;
+  margin: 18px 0;
+  font-size: 12px;
+  color: var(--grey-300);
+  position: relative;
+}
+.login-divider::before, .login-divider::after {
+  content: '';
+  position: absolute; top: 50%;
+  width: 42%; height: 1px;
+  background: var(--grey-100);
+}
+.login-divider::before { left: 0; }
+.login-divider::after { right: 0; }
+
+.demo-creds {
+  background: var(--mint);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--teal-dark);
+  border: 1px solid var(--teal-light);
+}
+.demo-creds strong { font-weight: 700; }
+
+/* ═══════════════════════════════════════
+   SHARED DASHBOARD LAYOUT
+═══════════════════════════════════════ */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, var(--teal-dark) 0%, #003d4d 100%);
+  position: fixed; left: 0; top: 0; bottom: 0;
+  display: flex; flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+.sidebar-logo {
+  padding: 24px 24px 20px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar-logo-icon {
+  width: 36px; height: 36px;
+  background: white;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.sidebar-logo-text {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 800;
+  color: white; letter-spacing: -0.3px;
+}
+.sidebar-logo-text span { color: var(--teal-light); }
+
+.sidebar-user {
+  padding: 18px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; gap: 12px;
+}
+.user-avatar {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal-light), var(--blue-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700;
+  color: var(--teal-dark);
+  font-family: var(--font-display);
+  flex-shrink: 0;
+}
+.user-name { font-size: 14px; font-weight: 600; color: white; }
+.user-role { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 300; margin-top: 1px; }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+.nav-section-label {
+  font-size: 10px; font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  padding: 16px 24px 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 24px;
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px; font-weight: 400;
+  border-left: 3px solid transparent;
+  margin: 1px 0;
+}
+.nav-item .nav-icon { font-size: 18px; width: 22px; text-align: center; }
+.nav-item:hover { color: white; background: rgba(255,255,255,0.08); border-left-color: rgba(255,255,255,0.3); }
+.nav-item.active { color: white; background: rgba(148,210,189,0.2); border-left-color: var(--teal-light); font-weight: 600; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--coral);
+  color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.logout-btn {
+  display: flex; align-items: center; gap: 10px;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+.logout-btn:hover { color: white; }
+
+/* Main content */
+.main-content {
+  margin-left: 260px;
+  flex: 1;
+  min-height: 100vh;
+  background: var(--off-white);
+}
+
+.top-bar {
+  background: white;
+  border-bottom: 1px solid var(--grey-100);
+  padding: 0 32px;
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+.top-bar-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 700;
+  color: var(--grey-900);
+}
+.top-bar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-icon-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--grey-50);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s;
+  position: relative;
+}
+.topbar-icon-btn:hover { background: var(--mint); }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px;
+  background: var(--coral);
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.content-area { padding: 32px; }
+
+/* ─── SECTION PANELS ─── */
+.section-panel { display: none; }
+.section-panel.active { display: block; animation: fadeSlideUp 0.4s ease; }
+
+/* ─── CARDS ─── */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--grey-100);
+}
+.card-header {
+  padding: 20px 24px 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700;
+  color: var(--grey-900);
+}
+.card-subtitle { font-size: 12px; color: var(--grey-300); margin-top: 2px; }
+.card-body { padding: 20px 24px 24px; }
+
+/* ─── STAT CARDS ─── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 22px 24px;
+  border: 1px solid var(--grey-100);
+  box-shadow: var(--shadow-sm);
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: all 0.2s;
+  cursor: default;
+}
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-icon {
+  width: 52px; height: 52px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; flex-shrink: 0;
+}
+.stat-icon.blue { background: #e0f2fe; }
+.stat-icon.teal { background: var(--mint); }
+.stat-icon.green { background: #dcfce7; }
+.stat-icon.coral { background: #fde8e3; }
+.stat-icon.amber { background: #fef3c7; }
+.stat-info { flex: 1; }
+.stat-value {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 800;
+  color: var(--grey-900);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label { font-size: 13px; color: var(--grey-500); }
+.stat-change {
+  font-size: 12px; font-weight: 600;
+  margin-top: 6px;
+}
+.stat-change.up { color: #16a34a; }
+.stat-change.down { color: var(--coral); }
+.stat-change.neutral { color: var(--grey-500); }
+
+/* ─── GRID LAYOUTS ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+/* ─── SECTION HEADER ─── */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 700;
+  color: var(--grey-900);
+}
+.section-subtitle { font-size: 14px; color: var(--grey-500); margin-top: 2px; }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 20px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; border: none;
+  transition: all 0.2s; text-decoration: none;
+}
+.btn-primary { background: linear-gradient(135deg, var(--teal-dark), var(--teal)); color: white; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,95,115,0.35); }
+.btn-secondary { background: var(--mint); color: var(--teal-dark); border: 1px solid var(--teal-light); }
+.btn-secondary:hover { background: var(--teal-light); }
+.btn-outline { background: transparent; color: var(--teal); border: 1.5px solid var(--teal); }
+.btn-outline:hover { background: var(--mint); }
+.btn-danger { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+.btn-danger:hover { background: #fecaca; }
+.btn-sm { padding: 7px 14px; font-size: 12px; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ─── BADGES ─── */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px; font-weight: 700;
+}
+.badge-teal { background: var(--mint); color: var(--teal-dark); }
+.badge-blue { background: #dbeafe; color: #1d4ed8; }
+.badge-green { background: #dcfce7; color: #15803d; }
+.badge-coral { background: #fde8e3; color: #c2410c; }
+.badge-amber { background: #fef3c7; color: #b45309; }
+
+/* ─── VITALS SECTION ─── */
+.vitals-ring-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 10px 0;
+}
+.vital-ring {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+.vital-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.vital-ring-inner { position: relative; z-index: 1; text-align: center; }
+.vital-ring-val {
+  font-family: var(--font-display);
+  font-size: 22px; font-weight: 800;
+  color: var(--grey-900);
+  line-height: 1;
+}
+.vital-ring-unit { font-size: 11px; color: var(--grey-300); }
+.vital-label { font-size: 13px; font-weight: 600; color: var(--grey-700); }
+.vital-status { font-size: 11px; margin-top: 2px; }
+
+/* ─── APPOINTMENT CARD ─── */
+.appt-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--grey-100);
+}
+.appt-item:last-child { border-bottom: none; padding-bottom: 0; }
+.appt-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal-light), var(--blue-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.appt-info { flex: 1; }
+.appt-name { font-size: 14px; font-weight: 600; color: var(--grey-900); }
+.appt-detail { font-size: 12px; color: var(--grey-500); margin-top: 2px; }
+.appt-time {
+  text-align: right;
+  font-size: 13px; font-weight: 600;
+  color: var(--teal);
+}
+.appt-date { font-size: 11px; color: var(--grey-300); margin-top: 2px; }
+
+/* ─── DOCTOR CARD ─── */
+.doctor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px; }
+.doctor-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  border: 1px solid var(--grey-100);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: all 0.25s;
+}
+.doctor-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.doctor-avatar {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  background: linear-gradient(135deg, var(--teal-light), var(--blue-light));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  border: 3px solid var(--mint);
+}
+.doctor-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--grey-900); margin-bottom: 3px; }
+.doctor-spec { font-size: 12px; color: var(--teal); font-weight: 600; margin-bottom: 4px; }
+.doctor-exp { font-size: 12px; color: var(--grey-500); margin-bottom: 10px; }
+.doctor-stars { color: var(--amber); font-size: 13px; margin-bottom: 4px; }
+.doctor-rating-val { font-size: 12px; color: var(--grey-500); }
+.doctor-tags { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin: 10px 0 14px; }
+
+/* ─── SEARCH BAR ─── */
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: white;
+  border: 1.5px solid var(--grey-100);
+  border-radius: var(--radius-md);
+  padding: 0 14px;
+  height: 46px;
+  box-shadow: var(--shadow-sm);
+}
+.search-bar input {
+  flex: 1; border: none; outline: none;
+  font-family: var(--font-body);
+  font-size: 14px; color: var(--grey-900);
+  background: transparent;
+}
+.search-bar input::placeholder { color: var(--grey-300); }
+.search-icon { font-size: 18px; color: var(--grey-300); }
+
+.filter-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 20px; }
+.filter-chip {
+  padding: 7px 16px;
+  border-radius: var(--radius-full);
+  font-size: 13px; font-weight: 500;
+  background: var(--grey-50);
+  color: var(--grey-700);
+  border: 1.5px solid var(--grey-100);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-chip:hover, .filter-chip.active { background: var(--mint); color: var(--teal-dark); border-color: var(--teal-light); }
+
+/* ─── TIMELINE ─── */
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before {
+  content: '';
+  position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 2px; background: var(--grey-100);
+}
+.timeline-item { position: relative; padding-bottom: 24px; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-dot {
+  position: absolute; left: -24px; top: 4px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--teal);
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px var(--teal-light);
+}
+.timeline-date { font-size: 11px; color: var(--grey-300); margin-bottom: 4px; }
+.timeline-content { background: var(--grey-50); border-radius: var(--radius-md); padding: 12px 16px; }
+.timeline-title { font-size: 14px; font-weight: 600; color: var(--grey-900); margin-bottom: 4px; }
+.timeline-desc { font-size: 12px; color: var(--grey-500); }
+
+/* ─── MEDICINE CARD ─── */
+.medicine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.med-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid var(--grey-100);
+  text-align: center;
+  transition: all 0.2s;
+}
+.med-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.med-icon { font-size: 36px; margin-bottom: 10px; }
+.med-name { font-size: 14px; font-weight: 700; color: var(--grey-900); margin-bottom: 3px; }
+.med-dose { font-size: 12px; color: var(--teal); font-weight: 600; margin-bottom: 4px; }
+.med-desc { font-size: 11px; color: var(--grey-500); margin-bottom: 12px; }
+.med-price { font-size: 16px; font-weight: 800; color: var(--teal-dark); margin-bottom: 10px; }
+
+/* ─── FOOD CARD ─── */
+.food-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  border: 1px solid var(--grey-100);
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.food-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.food-emoji { font-size: 32px; margin-bottom: 8px; }
+.food-name { font-size: 14px; font-weight: 700; color: var(--grey-900); margin-bottom: 3px; }
+.food-cal { font-size: 12px; color: var(--grey-500); }
+.food-type { font-size: 11px; margin-top: 6px; }
+
+/* ─── CHATBOT ─── */
+.chat-container {
+  display: flex; flex-direction: column;
+  height: 420px;
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--grey-100);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.chat-header {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  color: white;
+  display: flex; align-items: center; gap: 12px;
+}
+.chat-bot-avatar {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.chat-header-name { font-size: 14px; font-weight: 700; }
+.chat-header-status { font-size: 11px; opacity: 0.75; }
+.online-dot {
+  width: 8px; height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  display: inline-block; margin-right: 4px;
+}
+.chat-messages {
+  flex: 1; overflow-y: auto;
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+  background: var(--grey-50);
+}
+.chat-msg { display: flex; gap: 8px; max-width: 85%; }
+.chat-msg.bot { align-self: flex-start; }
+.chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13px; line-height: 1.5;
+}
+.chat-msg.bot .chat-bubble {
+  background: white; color: var(--grey-900);
+  border-radius: 4px 14px 14px 14px;
+  box-shadow: var(--shadow-sm);
+}
+.chat-msg.user .chat-bubble {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  color: white;
+  border-radius: 14px 4px 14px 14px;
+}
+.chat-msg-avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--mint);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.chat-input-row {
+  padding: 12px 16px;
+  background: white;
+  border-top: 1px solid var(--grey-100);
+  display: flex; gap: 10px;
+}
+.chat-input {
+  flex: 1; border: 1.5px solid var(--grey-100);
+  border-radius: var(--radius-full);
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: 13px; outline: none;
+  transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--teal); }
+.chat-send-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  border: none; color: white;
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.chat-send-btn:hover { transform: scale(1.08); }
+
+/* ─── EMERGENCY ─── */
+.emergency-hero {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  border-radius: var(--radius-xl);
+  padding: 40px;
+  text-align: center;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.emergency-hero::before {
+  content: '';
+  position: absolute; inset: -20px;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+}
+.emergency-btn {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: white;
+  border: none; cursor: pointer;
+  font-size: 40px;
+  margin: 0 auto 20px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 10px rgba(255,255,255,0.2);
+  animation: float 3s ease-in-out infinite;
+  transition: transform 0.2s;
+  position: relative; z-index: 1;
+}
+.emergency-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+.emergency-btn:hover { transform: scale(1.08); }
+.emergency-title {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 800;
+  margin-bottom: 8px;
+  position: relative; z-index: 1;
+}
+.emergency-sub { opacity: 0.85; font-size: 14px; position: relative; z-index: 1; }
+.emergency-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.emergency-contact {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+  border: 1px solid var(--grey-100);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+.emergency-contact:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.ec-icon { font-size: 28px; margin-bottom: 8px; }
+.ec-name { font-size: 13px; font-weight: 700; color: var(--grey-900); margin-bottom: 2px; }
+.ec-number { font-size: 12px; color: var(--teal); font-weight: 600; }
+
+/* ─── UPLOAD ZONE ─── */
+.upload-zone {
+  border: 2px dashed var(--grey-100);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--grey-50);
+}
+.upload-zone:hover { border-color: var(--teal); background: var(--mint); }
+.upload-icon { font-size: 40px; margin-bottom: 12px; }
+.upload-text { font-size: 14px; font-weight: 600; color: var(--grey-700); }
+.upload-sub { font-size: 12px; color: var(--grey-300); margin-top: 4px; }
+
+/* ─── RECORD ROW ─── */
+.record-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--grey-100);
+}
+.record-row:last-child { border-bottom: none; }
+.record-icon-box {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--mint);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.record-info { flex: 1; }
+.record-name { font-size: 14px; font-weight: 600; color: var(--grey-900); }
+.record-meta { font-size: 12px; color: var(--grey-500); margin-top: 2px; }
+.record-actions { display: flex; gap: 8px; }
+
+/* ─── CONSULT CARD ─── */
+.consult-option {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  border: 1px solid var(--grey-100);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: var(--shadow-sm);
+}
+.consult-option:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--teal-light); }
+.consult-icon { font-size: 48px; margin-bottom: 14px; }
+.consult-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--grey-900); margin-bottom: 6px; }
+.consult-desc { font-size: 13px; color: var(--grey-500); line-height: 1.6; }
+
+/* ─── APPOINTMENT BOOKING ─── */
+.booking-steps { display: flex; gap: 0; margin-bottom: 28px; }
+.booking-step {
+  flex: 1; text-align: center; position: relative;
+  padding: 0 10px;
+}
+.booking-step::after {
+  content: '';
+  position: absolute; top: 16px; left: 50%; right: -50%;
+  height: 2px; background: var(--grey-100);
+}
+.booking-step:last-child::after { display: none; }
+.step-circle {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--grey-100);
+  color: var(--grey-500);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  margin: 0 auto 6px;
+  position: relative; z-index: 1;
+}
+.booking-step.done .step-circle { background: var(--teal); color: white; }
+.booking-step.active .step-circle { background: var(--teal-dark); color: white; box-shadow: 0 0 0 4px var(--mint); }
+.step-label { font-size: 11px; color: var(--grey-500); font-weight: 500; }
+.booking-step.active .step-label { color: var(--teal-dark); font-weight: 700; }
+
+/* Time Slots */
+.time-slots { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0; }
+.time-slot {
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--grey-100);
+  font-size: 13px; font-weight: 600;
+  color: var(--grey-700);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+.time-slot:hover { border-color: var(--teal); color: var(--teal); }
+.time-slot.selected { background: var(--teal); color: white; border-color: var(--teal); }
+.time-slot.unavailable { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── FORM STYLING ─── */
+.form-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid var(--grey-100);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--grey-900);
+  background: var(--grey-50);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.form-select:focus { border-color: var(--teal); background: white; box-shadow: 0 0 0 3px rgba(10,147,150,0.1); }
+
+/* ─── DOCTOR DASHBOARD ─── */
+.patient-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 0; border-bottom: 1px solid var(--grey-100);
+}
+.patient-row:last-child { border-bottom: none; padding-bottom: 0; }
+.patient-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fde68a, #f59e0b);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.patient-info { flex: 1; }
+.patient-name { font-size: 14px; font-weight: 600; color: var(--grey-900); }
+.patient-detail { font-size: 12px; color: var(--grey-500); margin-top: 2px; }
+.patient-actions { display: flex; gap: 8px; }
+
+/* ─── MAP PLACEHOLDER ─── */
+.map-placeholder {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, #e0f2fe, #caf0f8);
+  height: 240px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border: 2px solid var(--teal-light);
+  position: relative;
+}
+.map-icon { font-size: 48px; margin-bottom: 12px; }
+.map-text { font-size: 15px; font-weight: 600; color: var(--teal-dark); }
+.map-sub { font-size: 12px; color: var(--grey-500); margin-top: 4px; }
+.map-pin {
+  position: absolute;
+  font-size: 32px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -70%);
+  animation: float 2s ease-in-out infinite;
+}
+
+/* ─── PAYMENT ─── */
+.payment-card {
+  background: linear-gradient(135deg, var(--teal-dark) 0%, #003d4d 100%);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.payment-card::before {
+  content: '';
+  position: absolute;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  top: -60px; right: -60px;
+}
+.payment-amount {
+  font-family: var(--font-display);
+  font-size: 36px; font-weight: 800;
+  margin-bottom: 4px;
+}
+.payment-label { font-size: 13px; opacity: 0.7; margin-bottom: 20px; }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(15,23,42,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+.modal {
+  background: white;
+  border-radius: var(--radius-xl);
+  max-width: 480px; width: 100%;
+  max-height: 80vh; overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  animation: fadeSlideUp 0.3s ease;
+}
+.modal-header {
+  padding: 24px 28px 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--grey-900); }
+.modal-close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--grey-100);
+  border: none; cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close:hover { background: var(--grey-100); }
+.modal-body { padding: 20px 28px 28px; }
+
+/* ─── NUTRITION DETAILS ─── */
+.nutrition-bar { margin-bottom: 12px; }
+.nutrition-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 5px; }
+.nutrition-label span:first-child { color: var(--grey-700); font-weight: 600; }
+.nutrition-label span:last-child { color: var(--teal); font-weight: 700; }
+.nutrition-track {
+  height: 7px; background: var(--grey-100); border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.nutrition-fill {
+  height: 100%; border-radius: var(--radius-full);
+  background: linear-gradient(90deg, var(--teal), var(--teal-light));
+  transition: width 0.6s ease;
+}
+
+/* ─── PRESCRIPTION ─── */
+.rx-header {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 20px 24px;
+  color: white;
+}
+.rx-body { padding: 20px 24px; background: white; border-radius: 0 0 var(--radius-lg) var(--radius-lg); border: 1px solid var(--grey-100); border-top: none; }
+.rx-symbol { font-size: 28px; font-weight: 900; font-style: italic; color: var(--teal-light); }
+.rx-med-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--grey-100); }
+.rx-med-row:last-child { border-bottom: none; }
+
+/* ─── TOAST ─── */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px;
+  z-index: 9999;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+  background: var(--grey-900);
+  color: white;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  font-size: 13px; font-weight: 500;
+  box-shadow: var(--shadow-xl);
+  display: flex; align-items: center; gap: 10px;
+  animation: fadeSlideUp 0.3s ease;
+  min-width: 260px;
+}
+.toast.success { background: var(--emerald); }
+.toast.error { background: #dc2626; }
+
+/* ─── MOBILE MENU ─── */
+.mobile-menu-btn {
+  display: none;
+  width: 40px; height: 40px;
+  background: var(--grey-50); border: none;
+  border-radius: var(--radius-md);
+  font-size: 20px; cursor: pointer;
+  align-items: center; justify-content: center;
+}
+
+/* ─── DIVIDER ─── */
+.divider { height: 1px; background: var(--grey-100); margin: 20px 0; }
+
+/* ─── PROGRESS ─── */
+.progress-bar { height: 8px; background: var(--grey-100); border-radius: var(--radius-full); overflow: hidden; }
+.progress-fill { height: 100%; border-radius: var(--radius-full); background: linear-gradient(90deg, var(--teal-dark), var(--teal-light)); }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--grey-100); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--grey-300); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main-content { margin-left: 0; }
+  .mobile-menu-btn { display: flex; }
+  .content-area { padding: 20px 16px; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .role-cards { grid-template-columns: 1fr 1fr; }
+  .login-form-card { padding: 28px 24px; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .emergency-grid { grid-template-columns: 1fr 1fr; }
+  .doctor-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .role-cards { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LANGUAGE BUTTON (Global) -->
+<button class="lang-btn" onclick="toggleLang()">🌐 English ▾</button>
+<div class="lang-dropdown" id="langDropdown">
+  <div class="lang-option active" onclick="setLang('en')">🇺🇸 English</div>
+  <div class="lang-option" onclick="setLang('ta')">🇮🇳 Tamil</div>
+  <div class="lang-option" onclick="setLang('hi')">🇮🇳 Hindi</div>
+  <div class="lang-option" onclick="setLang('fr')">🇫🇷 French</div>
+  <div class="lang-option" onclick="setLang('de')">🇩🇪 German</div>
+  <div class="lang-option" onclick="setLang('ar')">🇸🇦 Arabic</div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- FOOD MODAL -->
+<div class="modal-overlay" id="foodModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <span id="foodModalEmoji" style="font-size:28px"></span>
+        <div class="modal-title" id="foodModalName"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('foodModal')">✕</button>
+    </div>
+    <div class="modal-body" id="foodModalBody"></div>
+  </div>
+</div>
+
+<!-- BOOKING SUCCESS MODAL -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✅ Appointment Confirmed!</div>
+      <button class="modal-close" onclick="closeModal('bookingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center; padding: 10px 0;">
+        <div style="font-size:60px; margin-bottom:16px;">🎉</div>
+        <p style="font-size:15px; color:var(--grey-700); margin-bottom:8px;">Your appointment has been booked successfully!</p>
+        <p style="font-size:13px; color:var(--grey-500); margin-bottom:20px;">A confirmation has been sent to your email and phone.</p>
+        <div style="background:var(--mint); border-radius:var(--radius-md); padding:16px; text-align:left; margin-bottom:20px;">
+          <div style="font-size:13px; color:var(--grey-700); margin-bottom:6px;"><strong>Doctor:</strong> Dr. Sarah Johnson</div>
+          <div style="font-size:13px; color:var(--grey-700); margin-bottom:6px;"><strong>Date:</strong> March 30, 2026</div>
+          <div style="font-size:13px; color:var(--grey-700);"><strong>Time:</strong> 10:30 AM</div>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="closeModal('bookingModal')">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     LOGIN PAGE
+═══════════════════════════════════════ -->
+<div id="login-page" class="page active">
+  <div class="login-bg-shapes"></div>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-logo">
+        <div class="login-logo-icon">🏥</div>
+        <div class="login-logo-text">Medi<span>Client</span></div>
+      </div>
+      <p class="login-tagline">Your complete digital health companion</p>
+    </div>
+
+    <div class="role-cards">
+      <div class="role-card" id="patientRoleCard" onclick="selectRole('patient')">
+        <span class="role-icon">🧑‍⚕️</span>
+        <div class="role-title">Patient</div>
+        <div class="role-subtitle">Access your health records</div>
+      </div>
+      <div class="role-card" id="doctorRoleCard" onclick="selectRole('doctor')">
+        <span class="role-icon">👨‍⚕️</span>
+        <div class="role-title">Doctor</div>
+        <div class="role-subtitle">Manage appointments</div>
+      </div>
+    </div>
+
+    <div class="login-form-card">
+      <div class="login-form-title" id="formTitle">Welcome Back</div>
+      <div class="login-form-subtitle" id="formSubtitle">Please select your role and sign in to continue</div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="loginEmail" placeholder="your@email.com" value="patient@medi.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="loginPassword" placeholder="••••••••" value="password">
+      </div>
+
+      <button class="login-btn" onclick="doLogin()">Sign In →</button>
+
+      <div class="login-divider">demo credentials</div>
+      <div class="demo-creds">
+        <strong>Patient:</strong> patient@medi.com / password<br>
+        <strong>Doctor:</strong> doctor@medi.com / password
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PATIENT DASHBOARD
+═══════════════════════════════════════ -->
+<div id="patient-page" class="page">
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="patientSidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">🏥</div>
+        <div class="sidebar-logo-text">Medi<span>Client</span></div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar">AK</div>
+        <div>
+          <div class="user-name">Arjun Kumar</div>
+          <div class="user-role">Patient ID: #MC2024087</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" onclick="showSection('p-dashboard')"><span class="nav-icon">🏠</span> Dashboard</div>
+        <div class="nav-item" onclick="showSection('p-records')"><span class="nav-icon">📁</span> Health Records</div>
+
+        <div class="nav-section-label">Healthcare</div>
+        <div class="nav-item" onclick="showSection('p-doctors')"><span class="nav-icon">🔍</span> Find Doctors</div>
+        <div class="nav-item" onclick="showSection('p-appointments')"><span class="nav-icon">📅</span> Appointments <span class="nav-badge">2</span></div>
+        <div class="nav-item" onclick="showSection('p-medicines')"><span class="nav-icon">💊</span> Medicines</div>
+
+        <div class="nav-section-label">Wellness</div>
+        <div class="nav-item" onclick="showSection('p-diet')"><span class="nav-icon">🥗</span> Diet & Nutrition</div>
+        <div class="nav-item" onclick="showSection('p-chatbot')"><span class="nav-icon">🤖</span> AI Doctor</div>
+        <div class="nav-item" onclick="showSection('p-consult')"><span class="nav-icon">💬</span> Consult Online</div>
+
+        <div class="nav-section-label">Emergency</div>
+        <div class="nav-item" onclick="showSection('p-emergency')" style="color:#f87171"><span class="nav-icon">🚨</span> Emergency</div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="logout-btn" onclick="logout()">🚪 Sign Out</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+      <div class="top-bar">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar('patientSidebar')">☰</button>
+          <div class="top-bar-title" id="patientPageTitle">Dashboard</div>
+        </div>
+        <div class="top-bar-right">
+          <button class="topbar-icon-btn" title="Notifications">🔔<span class="notif-dot"></span></button>
+          <button class="topbar-icon-btn" title="Settings">⚙️</button>
+          <div class="user-avatar" style="width:36px;height:36px;font-size:14px;cursor:pointer;">AK</div>
+        </div>
+      </div>
+
+      <div class="content-area">
+
+        <!-- ── DASHBOARD ── -->
+        <div class="section-panel active" id="p-dashboard">
+          <div class="section-header animate-up">
+            <div>
+              <div class="section-title">Good Morning, Arjun! 👋</div>
+              <div class="section-subtitle">Saturday, March 28, 2026 • Here's your health overview</div>
+            </div>
+            <button class="btn btn-primary" onclick="showSection('p-emergency')">🚨 Emergency</button>
+          </div>
+
+          <!-- Vitals Stats -->
+          <div class="stats-row animate-up-delay-1">
+            <div class="stat-card">
+              <div class="stat-icon blue">❤️</div>
+              <div class="stat-info">
+                <div class="stat-value">120/80</div>
+                <div class="stat-label">Blood Pressure</div>
+                <div class="stat-change up">↑ Normal Range</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon amber">🩸</div>
+              <div class="stat-info">
+                <div class="stat-value">98 mg/dL</div>
+                <div class="stat-label">Blood Sugar</div>
+                <div class="stat-change up">✓ Healthy</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon teal">💓</div>
+              <div class="stat-info">
+                <div class="stat-value">72 bpm</div>
+                <div class="stat-label">Heart Rate</div>
+                <div class="stat-change up">↑ Normal</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">🌡️</div>
+              <div class="stat-info">
+                <div class="stat-value">98.6°F</div>
+                <div class="stat-label">Temperature</div>
+                <div class="stat-change neutral">→ Stable</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 2 -->
+          <div class="grid-2 animate-up-delay-2">
+            <!-- Vitals Rings -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Vital Signs</div>
+                  <div class="card-subtitle">Real-time monitoring</div>
+                </div>
+                <span class="badge badge-green">● All Normal</span>
+              </div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
+                  <div class="vitals-ring-wrap">
+                    <div class="vital-ring">
+                      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="8"/><circle cx="50" cy="50" r="40" fill="none" stroke="#0a9396" stroke-width="8" stroke-dasharray="188" stroke-dashoffset="47" stroke-linecap="round"/></svg>
+                      <div class="vital-ring-inner"><div class="vital-ring-val">75%</div><div class="vital-ring-unit">O₂ Sat</div></div>
+                    </div>
+                    <div class="vital-label">Oxygen</div>
+                    <div class="vital-status" style="color:#16a34a">Normal</div>
+                  </div>
+                  <div class="vitals-ring-wrap">
+                    <div class="vital-ring">
+                      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="8"/><circle cx="50" cy="50" r="40" fill="none" stroke="#0077b6" stroke-width="8" stroke-dasharray="188" stroke-dashoffset="75" stroke-linecap="round"/></svg>
+                      <div class="vital-ring-inner"><div class="vital-ring-val">60%</div><div class="vital-ring-unit">Hydration</div></div>
+                    </div>
+                    <div class="vital-label">Water</div>
+                    <div class="vital-status" style="color:#b45309">Low</div>
+                  </div>
+                  <div class="vitals-ring-wrap">
+                    <div class="vital-ring">
+                      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="8"/><circle cx="50" cy="50" r="40" fill="none" stroke="#2d6a4f" stroke-width="8" stroke-dasharray="188" stroke-dashoffset="38" stroke-linecap="round"/></svg>
+                      <div class="vital-ring-inner"><div class="vital-ring-val">80%</div><div class="vital-ring-unit">Wellness</div></div>
+                    </div>
+                    <div class="vital-label">Overall</div>
+                    <div class="vital-status" style="color:#16a34a">Good</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Appointments -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <div class="card-title">Upcoming Appointments</div>
+                  <div class="card-subtitle">Next 7 days</div>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="showSection('p-appointments')">View All</button>
+              </div>
+              <div class="card-body">
+                <div class="appt-item">
+                  <div class="appt-avatar">👨‍⚕️</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Dr. Sarah Johnson</div>
+                    <div class="appt-detail">Cardiologist • Apollo Hospital</div>
+                  </div>
+                  <div>
+                    <div class="appt-time">10:30 AM</div>
+                    <div class="appt-date">Mar 30</div>
+                  </div>
+                </div>
+                <div class="appt-item">
+                  <div class="appt-avatar">👩‍⚕️</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Dr. Ravi Patel</div>
+                    <div class="appt-detail">Neurologist • City Clinic</div>
+                  </div>
+                  <div>
+                    <div class="appt-time">2:00 PM</div>
+                    <div class="appt-date">Apr 2</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3 -->
+          <div class="grid-2" style="margin-top:20px;">
+            <!-- Medicine Reminders -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Medicine Reminders</div>
+                <span class="badge badge-amber">Today</span>
+              </div>
+              <div class="card-body">
+                <div class="appt-item">
+                  <div style="font-size:24px">💊</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Metformin 500mg</div>
+                    <div class="appt-detail">After breakfast</div>
+                  </div>
+                  <span class="badge badge-green">✓ Taken</span>
+                </div>
+                <div class="appt-item">
+                  <div style="font-size:24px">💉</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Lisinopril 10mg</div>
+                    <div class="appt-detail">With dinner</div>
+                  </div>
+                  <span class="badge badge-amber">Pending</span>
+                </div>
+                <div class="appt-item">
+                  <div style="font-size:24px">🩺</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Vitamin D3</div>
+                    <div class="appt-detail">Morning</div>
+                  </div>
+                  <span class="badge badge-green">✓ Taken</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Quick Actions</div>
+              </div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <button class="btn btn-secondary btn-full" onclick="showSection('p-appointments')">📅 Book Appointment</button>
+                  <button class="btn btn-secondary btn-full" onclick="showSection('p-records')">📋 Upload Report</button>
+                  <button class="btn btn-secondary btn-full" onclick="showSection('p-chatbot')">🤖 AI Doctor</button>
+                  <button class="btn btn-secondary btn-full" onclick="showSection('p-consult')">💬 Consult Now</button>
+                  <button class="btn btn-secondary btn-full" onclick="showSection('p-medicines')">💊 Order Medicine</button>
+                  <button class="btn btn-danger btn-full" onclick="showSection('p-emergency')">🚨 Emergency</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── HEALTH RECORDS ── -->
+        <div class="section-panel" id="p-records">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Health Records</div>
+              <div class="section-subtitle">All your medical documents in one place</div>
+            </div>
+            <button class="btn btn-primary">📤 Upload Report</button>
+          </div>
+
+          <!-- Upload Zone -->
+          <div class="upload-zone" style="margin-bottom:24px;" onclick="showToast('Feature: File upload dialog', 'success')">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">Click or drag to upload your medical reports</div>
+            <div class="upload-sub">PDF, Images, DICOM files supported • Max 20MB</div>
+          </div>
+
+          <div class="grid-2">
+            <!-- Reports List -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📋 Uploaded Reports</div>
+              </div>
+              <div class="card-body">
+                <div class="record-row">
+                  <div class="record-icon-box">🩺</div>
+                  <div class="record-info">
+                    <div class="record-name">Blood Test Report</div>
+                    <div class="record-meta">Uploaded Mar 20, 2026 • PDF • 1.2 MB</div>
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="showToast('Viewing report...', 'success')">👁️ View</button>
+                    <button class="btn btn-outline btn-sm">⬇️</button>
+                  </div>
+                </div>
+                <div class="record-row">
+                  <div class="record-icon-box">🫀</div>
+                  <div class="record-info">
+                    <div class="record-name">ECG Scan</div>
+                    <div class="record-meta">Uploaded Mar 15, 2026 • Image • 2.8 MB</div>
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn btn-secondary btn-sm">👁️ View</button>
+                    <button class="btn btn-outline btn-sm">⬇️</button>
+                  </div>
+                </div>
+                <div class="record-row">
+                  <div class="record-icon-box">🧠</div>
+                  <div class="record-info">
+                    <div class="record-name">MRI Brain Scan</div>
+                    <div class="record-meta">Uploaded Feb 28, 2026 • DICOM • 45 MB</div>
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn btn-secondary btn-sm">👁️ View</button>
+                    <button class="btn btn-outline btn-sm">⬇️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Prescriptions -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">💊 Prescriptions</div>
+              </div>
+              <div class="card-body">
+                <div class="rx-header" style="border-radius:var(--radius-md) var(--radius-md) 0 0; margin-bottom:0;">
+                  <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <div>
+                      <div class="rx-symbol">℞</div>
+                      <div style="font-size:14px; font-weight:700;">Dr. Sarah Johnson</div>
+                      <div style="font-size:11px; opacity:0.7;">March 20, 2026</div>
+                    </div>
+                    <button class="btn btn-sm" style="background:rgba(255,255,255,0.2); color:white; border:none;">⬇️ Download</button>
+                  </div>
+                </div>
+                <div style="background:var(--grey-50); border:1px solid var(--grey-100); border-top:none; border-radius:0 0 var(--radius-md) var(--radius-md); padding:14px;">
+                  <div class="rx-med-row">
+                    <span style="font-size:18px">💊</span>
+                    <div><div style="font-size:13px; font-weight:600;">Metformin 500mg</div><div style="font-size:11px; color:var(--grey-500);">1-0-1 • 30 days</div></div>
+                  </div>
+                  <div class="rx-med-row">
+                    <span style="font-size:18px">💊</span>
+                    <div><div style="font-size:13px; font-weight:600;">Lisinopril 10mg</div><div style="font-size:11px; color:var(--grey-500);">0-0-1 • 30 days</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- History Timeline -->
+          <div class="card" style="margin-top:20px;">
+            <div class="card-header"><div class="card-title">📅 Medical History</div></div>
+            <div class="card-body">
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-date">March 20, 2026</div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">Cardiology Checkup</div>
+                    <div class="timeline-desc">Routine heart checkup. BP: 120/80, ECG normal. Prescribed Lisinopril.</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-date">February 10, 2026</div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">Blood Panel - Diabetes Monitoring</div>
+                    <div class="timeline-desc">HbA1c: 6.8%, Fasting glucose: 112 mg/dL. Continued Metformin.</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-date">January 5, 2026</div>
+                  <div class="timeline-content">
+                    <div class="timeline-title">General Physical Examination</div>
+                    <div class="timeline-desc">Annual checkup. All vitals normal. Advised increased water intake.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── FIND DOCTORS ── -->
+        <div class="section-panel" id="p-doctors">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Find Doctors</div>
+              <div class="section-subtitle">Search from 500+ verified specialists</div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-bottom:14px;">
+            <div class="search-bar" style="flex:1"><span class="search-icon">🔍</span><input type="text" placeholder="Search by doctor name or specialty..."></div>
+            <div class="search-bar" style="width:200px;"><span class="search-icon">📍</span><input type="text" placeholder="Location..." value="Coimbatore"></div>
+          </div>
+
+          <div class="filter-row">
+            <div class="filter-chip active">All</div>
+            <div class="filter-chip" onclick="filterDoctors(this)">❤️ Cardiologist</div>
+            <div class="filter-chip" onclick="filterDoctors(this)">🦷 Dentist</div>
+            <div class="filter-chip" onclick="filterDoctors(this)">🧠 Neurologist</div>
+            <div class="filter-chip" onclick="filterDoctors(this)">🦴 Orthopedist</div>
+            <div class="filter-chip" onclick="filterDoctors(this)">👁️ Ophthalmologist</div>
+            <div class="filter-chip" onclick="filterDoctors(this)">🧪 Pathologist</div>
+          </div>
+
+          <div class="doctor-grid">
+            <div class="doctor-card">
+              <div class="doctor-avatar">👩‍⚕️</div>
+              <div class="doctor-name">Dr. Sarah Johnson</div>
+              <div class="doctor-spec">❤️ Cardiologist</div>
+              <div class="doctor-exp">15 years experience</div>
+              <div class="doctor-stars">★★★★★</div>
+              <div class="doctor-rating-val">4.9 (324 reviews)</div>
+              <div class="doctor-tags">
+                <span class="badge badge-teal">Available Today</span>
+                <span class="badge badge-blue">Apollo Hospital</span>
+              </div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showSection('p-appointments')">Book Now</button>
+            </div>
+            <div class="doctor-card">
+              <div class="doctor-avatar">👨‍⚕️</div>
+              <div class="doctor-name">Dr. Ravi Patel</div>
+              <div class="doctor-spec">🧠 Neurologist</div>
+              <div class="doctor-exp">12 years experience</div>
+              <div class="doctor-stars">★★★★☆</div>
+              <div class="doctor-rating-val">4.7 (218 reviews)</div>
+              <div class="doctor-tags">
+                <span class="badge badge-teal">Available</span>
+                <span class="badge badge-blue">City Clinic</span>
+              </div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showSection('p-appointments')">Book Now</button>
+            </div>
+            <div class="doctor-card">
+              <div class="doctor-avatar">👩‍⚕️</div>
+              <div class="doctor-name">Dr. Priya Sharma</div>
+              <div class="doctor-spec">🦷 Dentist</div>
+              <div class="doctor-exp">8 years experience</div>
+              <div class="doctor-stars">★★★★★</div>
+              <div class="doctor-rating-val">4.8 (156 reviews)</div>
+              <div class="doctor-tags">
+                <span class="badge badge-amber">Tomorrow</span>
+                <span class="badge badge-blue">SmileCare</span>
+              </div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showSection('p-appointments')">Book Now</button>
+            </div>
+            <div class="doctor-card">
+              <div class="doctor-avatar">👨‍⚕️</div>
+              <div class="doctor-name">Dr. James Wilson</div>
+              <div class="doctor-spec">🦴 Orthopedist</div>
+              <div class="doctor-exp">20 years experience</div>
+              <div class="doctor-stars">★★★★★</div>
+              <div class="doctor-rating-val">5.0 (412 reviews)</div>
+              <div class="doctor-tags">
+                <span class="badge badge-teal">Available Today</span>
+                <span class="badge badge-blue">MedCity</span>
+              </div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showSection('p-appointments')">Book Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── APPOINTMENTS ── -->
+        <div class="section-panel" id="p-appointments">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Book Appointment</div>
+              <div class="section-subtitle">Schedule with your preferred doctor</div>
+            </div>
+          </div>
+
+          <div class="booking-steps">
+            <div class="booking-step done"><div class="step-circle">✓</div><div class="step-label">Hospital</div></div>
+            <div class="booking-step active"><div class="step-circle">2</div><div class="step-label">Doctor</div></div>
+            <div class="booking-step"><div class="step-circle">3</div><div class="step-label">Date & Time</div></div>
+            <div class="booking-step"><div class="step-circle">4</div><div class="step-label">Confirm</div></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">🏥 Select Hospital</div></div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label">Hospital</label>
+                  <select class="form-select">
+                    <option>Apollo Hospital, Coimbatore</option>
+                    <option>City Clinic, RS Puram</option>
+                    <option>SmileCare Dental, Gandhipuram</option>
+                    <option>MedCity Hospital, Peelamedu</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Specialty</label>
+                  <select class="form-select">
+                    <option>Cardiology</option>
+                    <option>Neurology</option>
+                    <option>Dentistry</option>
+                    <option>Orthopedics</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Doctor</label>
+                  <select class="form-select">
+                    <option>Dr. Sarah Johnson — Cardiologist</option>
+                    <option>Dr. Ravi Patel — Neurologist</option>
+                    <option>Dr. Priya Sharma — Dentist</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Appointment Date</label>
+                  <input type="date" class="form-input" value="2026-03-30">
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><div class="card-title">🕐 Select Time Slot</div></div>
+              <div class="card-body">
+                <div style="font-size:13px; color:var(--grey-500); margin-bottom:10px;">Available slots for March 30, 2026</div>
+                <div class="time-slots">
+                  <div class="time-slot unavailable">9:00 AM</div>
+                  <div class="time-slot unavailable">9:30 AM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">10:00 AM</div>
+                  <div class="time-slot selected" onclick="selectSlot(this)">10:30 AM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">11:00 AM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">11:30 AM</div>
+                  <div class="time-slot unavailable">12:00 PM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">2:00 PM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">2:30 PM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">3:00 PM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">3:30 PM</div>
+                  <div class="time-slot" onclick="selectSlot(this)">4:00 PM</div>
+                </div>
+
+                <div class="divider"></div>
+                <div style="background:var(--mint); border-radius:var(--radius-md); padding:14px; margin-bottom:16px;">
+                  <div style="font-size:13px; font-weight:700; color:var(--teal-dark); margin-bottom:8px;">Booking Summary</div>
+                  <div style="font-size:12px; color:var(--grey-700);">Doctor: <strong>Dr. Sarah Johnson</strong></div>
+                  <div style="font-size:12px; color:var(--grey-700);">Date: <strong>March 30, 2026</strong></div>
+                  <div style="font-size:12px; color:var(--grey-700);">Time: <strong>10:30 AM</strong></div>
+                  <div style="font-size:12px; color:var(--grey-700);">Consultation: <strong>₹500</strong></div>
+                </div>
+                <button class="btn btn-primary btn-full" onclick="openModal('bookingModal')">✅ Confirm Appointment</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── MEDICINES ── -->
+        <div class="section-panel" id="p-medicines">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Medicine Section</div>
+              <div class="section-subtitle">Order medicines & manage reminders</div>
+            </div>
+            <button class="btn btn-primary">🔔 Add Reminder</button>
+          </div>
+
+          <div class="search-bar" style="margin-bottom:20px;">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search medicines...">
+          </div>
+
+          <div class="medicine-grid">
+            <div class="med-card">
+              <div class="med-icon">💊</div>
+              <div class="med-name">Metformin 500mg</div>
+              <div class="med-dose">1-0-1 After meals</div>
+              <div class="med-desc">Controls blood sugar in Type 2 diabetes</div>
+              <div class="med-price">₹28 / strip</div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showToast('Added to cart!', 'success')">🛒 Add to Cart</button>
+            </div>
+            <div class="med-card">
+              <div class="med-icon">💉</div>
+              <div class="med-name">Lisinopril 10mg</div>
+              <div class="med-dose">0-0-1 With dinner</div>
+              <div class="med-desc">Blood pressure management</div>
+              <div class="med-price">₹45 / strip</div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showToast('Added to cart!', 'success')">🛒 Add to Cart</button>
+            </div>
+            <div class="med-card">
+              <div class="med-icon">🌞</div>
+              <div class="med-name">Vitamin D3 60K</div>
+              <div class="med-dose">Once weekly</div>
+              <div class="med-desc">Bone health & immunity support</div>
+              <div class="med-price">₹120 / cap</div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showToast('Added to cart!', 'success')">🛒 Add to Cart</button>
+            </div>
+            <div class="med-card">
+              <div class="med-icon">🧴</div>
+              <div class="med-name">Omeprazole 20mg</div>
+              <div class="med-dose">1-0-0 Before food</div>
+              <div class="med-desc">Acid reflux & gastric protection</div>
+              <div class="med-price">₹32 / strip</div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="showToast('Added to cart!', 'success')">🛒 Add to Cart</button>
+            </div>
+          </div>
+
+          <!-- Reminders -->
+          <div class="card" style="margin-top:24px;">
+            <div class="card-header"><div class="card-title">🔔 Daily Medicine Schedule</div></div>
+            <div class="card-body">
+              <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+                <div style="text-align:center; background:var(--grey-50); border-radius:var(--radius-md); padding:16px;">
+                  <div style="font-size:24px; margin-bottom:6px;">🌅</div>
+                  <div style="font-size:13px; font-weight:700; color:var(--grey-900); margin-bottom:8px;">Morning</div>
+                  <div style="font-size:12px; color:var(--grey-500);">Metformin 500mg<br>Vitamin D3</div>
+                </div>
+                <div style="text-align:center; background:var(--grey-50); border-radius:var(--radius-md); padding:16px;">
+                  <div style="font-size:24px; margin-bottom:6px;">☀️</div>
+                  <div style="font-size:13px; font-weight:700; color:var(--grey-900); margin-bottom:8px;">Afternoon</div>
+                  <div style="font-size:12px; color:var(--grey-300);">No medicines</div>
+                </div>
+                <div style="text-align:center; background:var(--grey-50); border-radius:var(--radius-md); padding:16px;">
+                  <div style="font-size:24px; margin-bottom:6px;">🌙</div>
+                  <div style="font-size:13px; font-weight:700; color:var(--grey-900); margin-bottom:8px;">Evening</div>
+                  <div style="font-size:12px; color:var(--grey-500);">Metformin 500mg<br>Lisinopril 10mg</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DIET & NUTRITION ── -->
+        <div class="section-panel" id="p-diet">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Diet & Nutrition</div>
+              <div class="section-subtitle">Personalized recommendations for Type 2 Diabetes</div>
+            </div>
+          </div>
+
+          <div class="grid-2" style="margin-bottom:24px;">
+            <div class="card" style="border-top: 3px solid #16a34a;">
+              <div class="card-header"><div class="card-title">✅ Recommended Foods</div></div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                  <div class="food-card" onclick="showFoodModal('🥦','Broccoli',{cal:55, protein:'3.7g', carbs:'11g', fiber:'5.1g', fat:'0.6g', glycemic:'Low (15)'})">
+                    <div class="food-emoji">🥦</div>
+                    <div class="food-name">Broccoli</div>
+                    <div class="food-cal">55 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-green">Low GI</span></div>
+                  </div>
+                  <div class="food-card" onclick="showFoodModal('🥑','Avocado',{cal:160, protein:'2g', carbs:'9g', fiber:'7g', fat:'15g', glycemic:'Very Low (10)'})">
+                    <div class="food-emoji">🥑</div>
+                    <div class="food-name">Avocado</div>
+                    <div class="food-cal">160 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-green">Healthy Fat</span></div>
+                  </div>
+                  <div class="food-card" onclick="showFoodModal('🐟','Salmon',{cal:208, protein:'20g', carbs:'0g', fiber:'0g', fat:'13g', glycemic:'Zero (0)'})">
+                    <div class="food-emoji">🐟</div>
+                    <div class="food-name">Salmon</div>
+                    <div class="food-cal">208 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-blue">High Protein</span></div>
+                  </div>
+                  <div class="food-card" onclick="showFoodModal('🥚','Eggs',{cal:155, protein:'13g', carbs:'1.1g', fiber:'0g', fat:'11g', glycemic:'Very Low (0)'})">
+                    <div class="food-emoji">🥚</div>
+                    <div class="food-name">Eggs</div>
+                    <div class="food-cal">155 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-blue">Protein Rich</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="border-top: 3px solid #dc2626;">
+              <div class="card-header"><div class="card-title">🚫 Restricted Foods</div></div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                  <div class="food-card" onclick="showFoodModal('🍰','White Cake',{cal:371, protein:'4g', carbs:'58g', fiber:'0.3g', fat:'14g', glycemic:'Very High (87)'})">
+                    <div class="food-emoji">🍰</div>
+                    <div class="food-name">White Cake</div>
+                    <div class="food-cal">371 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-coral">High Sugar</span></div>
+                  </div>
+                  <div class="food-card" onclick="showFoodModal('🥤','Soda',{cal:42, protein:'0g', carbs:'10.6g', fiber:'0g', fat:'0g', glycemic:'High (63)'})">
+                    <div class="food-emoji">🥤</div>
+                    <div class="food-name">Soda Drinks</div>
+                    <div class="food-cal">42 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-coral">Avoid</span></div>
+                  </div>
+                  <div class="food-card" onclick="showFoodModal('🍟','French Fries',{cal:312, protein:'3.4g', carbs:'41g', fiber:'3.8g', fat:'15g', glycemic:'High (75)'})">
+                    <div class="food-emoji">🍟</div>
+                    <div class="food-name">French Fries</div>
+                    <div class="food-cal">312 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-coral">High GI</span></div>
+                  </div>
+                  <div class="food-card" onclick="showFoodModal('🍚','White Rice',{cal:130, protein:'2.7g', carbs:'28g', fiber:'0.4g', fat:'0.3g', glycemic:'High (72)'})">
+                    <div class="food-emoji">🍚</div>
+                    <div class="food-name">White Rice</div>
+                    <div class="food-cal">130 kcal / 100g</div>
+                    <div class="food-type"><span class="badge badge-amber">Moderate</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── AI CHATBOT ── -->
+        <div class="section-panel" id="p-chatbot">
+          <div class="section-header">
+            <div>
+              <div class="section-title">AI Doctor</div>
+              <div class="section-subtitle">Get basic medical guidance & health answers</div>
+            </div>
+          </div>
+          <div style="background:var(--mint); border:1px solid var(--teal-light); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:20px; font-size:13px; color:var(--teal-dark);">
+            ⚠️ This AI provides general health information only. Always consult a doctor for medical decisions.
+          </div>
+          <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+              <div class="chat-bot-avatar">🤖</div>
+              <div>
+                <div class="chat-header-name">MediBot AI</div>
+                <div class="chat-header-status"><span class="online-dot"></span>Online & Available</div>
+              </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-msg bot">
+                <div class="chat-msg-avatar">🤖</div>
+                <div class="chat-bubble">Hello Arjun! I'm MediBot. I can answer basic health questions, help you understand symptoms, or guide you to the right specialist. What can I help you with today? 😊</div>
+              </div>
+              <div class="chat-msg bot">
+                <div class="chat-msg-avatar">🤖</div>
+                <div class="chat-bubble">Quick suggestions: Try asking about "headache remedies", "diabetes diet", or "when to see a doctor".</div>
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <input class="chat-input" type="text" id="chatInput" placeholder="Type your health question..." onkeydown="if(event.key==='Enter') sendChatMsg()">
+              <button class="chat-send-btn" onclick="sendChatMsg()">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONSULT ONLINE ── -->
+        <div class="section-panel" id="p-consult">
+          <div class="section-header">
+            <div>
+              <div class="section-title">Online Consultation</div>
+              <div class="section-subtitle">Connect with doctors from anywhere</div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-bottom:24px;">
+            <div class="consult-option" onclick="showToast('Starting chat consultation...', 'success')">
+              <div class="consult-icon">💬</div>
+              <div class="consult-title">Chat Consultation</div>
+              <div class="consult-desc">Text-based consultation with doctors. Get answers within minutes.</div>
+              <button class="btn btn-primary" style="margin-top:16px;">Start Chat</button>
+            </div>
+            <div class="consult-option" onclick="showToast('Starting video call...', 'success')">
+              <div class="consult-icon">📹</div>
+              <div class="consult-title">Video Consultation</div>
+              <div class="consult-desc">Face-to-face video call with your doctor. Like an in-person visit.</div>
+              <button class="btn btn-primary" style="margin-top:16px;">Join Video Call</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header"><div class="card-title">👨‍⚕️ Available Doctors Now</div></div>
+            <div class="card-body">
+              <div class="appt-item">
+                <div class="appt-avatar">👩‍⚕️</div>
+                <div class="appt-info">
+                  <div class="appt-name">Dr. Sarah Johnson</div>
+                  <div class="appt-detail">Cardiologist • Available for chat & video</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Opening chat...', 'success')">💬</button>
+                  <button class="btn btn-primary btn-sm" onclick="showToast('Starting video...', 'success')">📹</button>
+                </div>
+              </div>
+              <div class="appt-item">
+                <div class="appt-avatar">👨‍⚕️</div>
+                <div class="appt-info">
+                  <div class="appt-name">Dr. Ravi Patel</div>
+                  <div class="appt-detail">Neurologist • Chat only</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Opening chat...', 'success')">💬</button>
+                  <button class="btn btn-outline btn-sm" style="opacity:0.4;" disabled>📹</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── EMERGENCY ── -->
+        <div class="section-panel" id="p-emergency">
+          <div class="emergency-hero">
+            <button class="emergency-btn" onclick="showToast('🚨 Emergency services contacted! Help is on the way.', 'error')">🆘</button>
+            <div class="emergency-title">Emergency Help</div>
+            <div class="emergency-sub">Press the button above to call emergency services immediately</div>
+          </div>
+
+          <div class="emergency-grid">
+            <div class="emergency-contact" onclick="showToast('📞 Calling Ambulance: 108', 'error')">
+              <div class="ec-icon">🚑</div>
+              <div class="ec-name">Ambulance</div>
+              <div class="ec-number">108</div>
+            </div>
+            <div class="emergency-contact" onclick="showToast('📞 Calling Mom: +91 98XXX XXXXX', 'success')">
+              <div class="ec-icon">👩</div>
+              <div class="ec-name">Mom</div>
+              <div class="ec-number">+91 98XXX XXXXX</div>
+            </div>
+            <div class="emergency-contact" onclick="showToast('📞 Calling Dad: +91 97XXX XXXXX', 'success')">
+              <div class="ec-icon">👨</div>
+              <div class="ec-name">Dad</div>
+              <div class="ec-number">+91 97XXX XXXXX</div>
+            </div>
+            <div class="emergency-contact" onclick="showToast('📞 Calling Hospital: Apollo Coimbatore', 'success')">
+              <div class="ec-icon">🏥</div>
+              <div class="ec-name">Apollo Hospital</div>
+              <div class="ec-number">0422-4345678</div>
+            </div>
+            <div class="emergency-contact" onclick="showToast('📞 Calling Police: 100', 'error')">
+              <div class="ec-icon">👮</div>
+              <div class="ec-name">Police</div>
+              <div class="ec-number">100</div>
+            </div>
+            <div class="emergency-contact" onclick="showToast('📞 Calling Dr. Johnson...', 'success')">
+              <div class="ec-icon">👩‍⚕️</div>
+              <div class="ec-name">Dr. Johnson</div>
+              <div class="ec-number">My Doctor</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content-area -->
+    </div><!-- /main-content -->
+  </div><!-- /dashboard-layout -->
+</div><!-- /patient-page -->
+
+
+<!-- ═══════════════════════════════════════
+     DOCTOR DASHBOARD
+═══════════════════════════════════════ -->
+<div id="doctor-page" class="page">
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="doctorSidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">🏥</div>
+        <div class="sidebar-logo-text">Medi<span>Client</span></div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" style="background:linear-gradient(135deg,#a7f3d0,#6ee7b7); color:#065f46;">SJ</div>
+        <div>
+          <div class="user-name">Dr. Sarah Johnson</div>
+          <div class="user-role">Cardiologist • MD, FACC</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Overview</div>
+        <div class="nav-item active" onclick="showDoctorSection('d-home')"><span class="nav-icon">🏠</span> Home</div>
+        <div class="nav-item" onclick="showDoctorSection('d-about')"><span class="nav-icon">👩‍⚕️</span> About Me</div>
+        <div class="nav-item" onclick="showDoctorSection('d-services')"><span class="nav-icon">🩺</span> Services</div>
+
+        <div class="nav-section-label">Practice</div>
+        <div class="nav-item" onclick="showDoctorSection('d-appointments')"><span class="nav-icon">📅</span> Appointments <span class="nav-badge">5</span></div>
+        <div class="nav-item" onclick="showDoctorSection('d-patients')"><span class="nav-icon">👥</span> Patients</div>
+        <div class="nav-item" onclick="showDoctorSection('d-prescriptions')"><span class="nav-icon">💊</span> Prescriptions</div>
+
+        <div class="nav-section-label">Communication</div>
+        <div class="nav-item" onclick="showDoctorSection('d-consult')"><span class="nav-icon">💬</span> Online Consult</div>
+        <div class="nav-item" onclick="showDoctorSection('d-location')"><span class="nav-icon">📍</span> Clinic Location</div>
+        <div class="nav-item" onclick="showDoctorSection('d-payments')"><span class="nav-icon">💳</span> Payments</div>
+        <div class="nav-item" onclick="showDoctorSection('d-contact')"><span class="nav-icon">📞</span> Contact</div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="logout-btn" onclick="logout()">🚪 Sign Out</div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+      <div class="top-bar">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar('doctorSidebar')">☰</button>
+          <div class="top-bar-title" id="doctorPageTitle">Doctor Dashboard</div>
+        </div>
+        <div class="top-bar-right">
+          <button class="topbar-icon-btn">🔔<span class="notif-dot"></span></button>
+          <button class="btn btn-primary btn-sm" onclick="showToast('Opening call interface...','success')">📞 Call Patient</button>
+          <div class="user-avatar" style="width:36px;height:36px;font-size:14px;background:linear-gradient(135deg,#a7f3d0,#6ee7b7);color:#065f46;cursor:pointer;">SJ</div>
+        </div>
+      </div>
+
+      <div class="content-area">
+
+        <!-- ── DOCTOR HOME ── -->
+        <div class="section-panel active" id="d-home">
+          <div class="section-header animate-up">
+            <div>
+              <div class="section-title">Good Morning, Dr. Johnson! 👋</div>
+              <div class="section-subtitle">Saturday, March 28, 2026 • Your daily overview</div>
+            </div>
+          </div>
+
+          <div class="stats-row animate-up-delay-1">
+            <div class="stat-card">
+              <div class="stat-icon teal">📅</div>
+              <div class="stat-info">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Today's Appointments</div>
+                <div class="stat-change up">5 remaining</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon blue">👥</div>
+              <div class="stat-info">
+                <div class="stat-value">247</div>
+                <div class="stat-label">Total Patients</div>
+                <div class="stat-change up">↑ 12 this week</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">⭐</div>
+              <div class="stat-info">
+                <div class="stat-value">4.9</div>
+                <div class="stat-label">Patient Rating</div>
+                <div class="stat-change up">324 reviews</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon coral">💳</div>
+              <div class="stat-info">
+                <div class="stat-value">₹24K</div>
+                <div class="stat-label">This Month Revenue</div>
+                <div class="stat-change up">↑ 8% vs last</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid-2 animate-up-delay-2">
+            <!-- Today's Schedule -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">📅 Today's Schedule</div>
+                <span class="badge badge-teal">8 Appointments</span>
+              </div>
+              <div class="card-body">
+                <div class="appt-item">
+                  <div class="patient-avatar">👤</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Arjun Kumar</div>
+                    <div class="appt-detail">Follow-up • Blood pressure check</div>
+                  </div>
+                  <div>
+                    <div class="appt-time">9:00 AM</div>
+                    <span class="badge badge-green" style="display:block; margin-top:4px; font-size:10px;">Completed</span>
+                  </div>
+                </div>
+                <div class="appt-item">
+                  <div class="patient-avatar">👤</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Meera Nair</div>
+                    <div class="appt-detail">New patient • Chest pain consultation</div>
+                  </div>
+                  <div>
+                    <div class="appt-time">10:30 AM</div>
+                    <span class="badge badge-amber" style="display:block; margin-top:4px; font-size:10px;">Next</span>
+                  </div>
+                </div>
+                <div class="appt-item">
+                  <div class="patient-avatar">👤</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Raj Sharma</div>
+                    <div class="appt-detail">Routine checkup • ECG review</div>
+                  </div>
+                  <div>
+                    <div class="appt-time">11:30 AM</div>
+                    <span class="badge badge-blue" style="display:block; margin-top:4px; font-size:10px;">Upcoming</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+              <div class="card-header"><div class="card-title">⚡ Quick Actions</div></div>
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                  <button class="btn btn-secondary btn-full" onclick="showDoctorSection('d-appointments')">📅 View Appointments</button>
+                  <button class="btn btn-secondary btn-full" onclick="showDoctorSection('d-prescriptions')">💊 Write Prescription</button>
+                  <button class="btn btn-secondary btn-full" onclick="showDoctorSection('d-patients')">👥 Patient Records</button>
+                  <button class="btn btn-secondary btn-full" onclick="showDoctorSection('d-consult')">💬 Start Consultation</button>
+                  <button class="btn btn-secondary btn-full" onclick="showDoctorSection('d-location')">📍 View Clinic</button>
+                  <button class="btn btn-secondary btn-full" onclick="showDoctorSection('d-payments')">💳 Payments</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ABOUT DOCTOR ── -->
+        <div class="section-panel" id="d-about">
+          <div class="section-header"><div class="section-title">About Me</div></div>
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-body">
+              <div style="display:flex; gap:24px; align-items:start; flex-wrap:wrap;">
+                <div style="text-align:center;">
+                  <div style="width:100px; height:100px; border-radius:50%; background:linear-gradient(135deg, var(--teal-light), var(--blue-light)); display:flex; align-items:center; justify-content:center; font-size:48px; margin:0 auto 10px; border:4px solid var(--mint);">👩‍⚕️</div>
+                  <div style="font-family:var(--font-display); font-size:18px; font-weight:800; color:var(--grey-900);">Dr. Sarah Johnson</div>
+                  <div style="color:var(--teal); font-size:14px; font-weight:600;">Cardiologist</div>
+                  <div style="margin-top:8px;"><span class="badge badge-teal">MD, FACC</span></div>
+                </div>
+                <div style="flex:1; min-width:200px;">
+                  <p style="font-size:14px; color:var(--grey-700); line-height:1.7; margin-bottom:16px;">Dr. Sarah Johnson is a board-certified cardiologist with 15 years of experience treating cardiovascular diseases. She completed her residency at AIIMS and fellowship at Johns Hopkins Hospital.</p>
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div style="background:var(--mint); border-radius:var(--radius-md); padding:14px; text-align:center;">
+                      <div style="font-size:22px; font-weight:800; color:var(--teal-dark);">15+</div>
+                      <div style="font-size:12px; color:var(--grey-500);">Years Experience</div>
+                    </div>
+                    <div style="background:var(--mint); border-radius:var(--radius-md); padding:14px; text-align:center;">
+                      <div style="font-size:22px; font-weight:800; color:var(--teal-dark);">5000+</div>
+                      <div style="font-size:12px; color:var(--grey-500);">Patients Treated</div>
+                    </div>
+                    <div style="background:var(--mint); border-radius:var(--radius-md); padding:14px; text-align:center;">
+                      <div style="font-size:22px; font-weight:800; color:var(--teal-dark);">4.9★</div>
+                      <div style="font-size:12px; color:var(--grey-500);">Patient Rating</div>
+                    </div>
+                    <div style="background:var(--mint); border-radius:var(--radius-md); padding:14px; text-align:center;">
+                      <div style="font-size:22px; font-weight:800; color:var(--teal-dark);">28</div>
+                      <div style="font-size:12px; color:var(--grey-500);">Publications</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SERVICES ── -->
+        <div class="section-panel" id="d-services">
+          <div class="section-header"><div class="section-title">Services Offered</div></div>
+          <div class="grid-3">
+            <div class="card" style="text-align:center; padding:24px;">
+              <div style="font-size:40px; margin-bottom:12px;">❤️</div>
+              <div style="font-family:var(--font-display); font-size:16px; font-weight:700; margin-bottom:6px;">Cardiac Consultation</div>
+              <div style="font-size:13px; color:var(--grey-500); margin-bottom:14px;">Complete heart health evaluation and treatment planning</div>
+              <div style="font-weight:800; color:var(--teal-dark); font-size:18px; margin-bottom:12px;">₹500</div>
+              <button class="btn btn-primary btn-full btn-sm">Book Now</button>
+            </div>
+            <div class="card" style="text-align:center; padding:24px;">
+              <div style="font-size:40px; margin-bottom:12px;">🫀</div>
+              <div style="font-family:var(--font-display); font-size:16px; font-weight:700; margin-bottom:6px;">ECG Analysis</div>
+              <div style="font-size:13px; color:var(--grey-500); margin-bottom:14px;">Electrocardiogram reading and interpretation</div>
+              <div style="font-weight:800; color:var(--teal-dark); font-size:18px; margin-bottom:12px;">₹300</div>
+              <button class="btn btn-primary btn-full btn-sm">Book Now</button>
+            </div>
+            <div class="card" style="text-align:center; padding:24px;">
+              <div style="font-size:40px; margin-bottom:12px;">📹</div>
+              <div style="font-family:var(--font-display); font-size:16px; font-weight:700; margin-bottom:6px;">Video Consultation</div>
+              <div style="font-size:13px; color:var(--grey-500); margin-bottom:14px;">Online consultation from the comfort of your home</div>
+              <div style="font-weight:800; color:var(--teal-dark); font-size:18px; margin-bottom:12px;">₹400</div>
+              <button class="btn btn-primary btn-full btn-sm">Book Now</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DOCTOR APPOINTMENTS ── -->
+        <div class="section-panel" id="d-appointments">
+          <div class="section-header">
+            <div><div class="section-title">Appointment Management</div></div>
+            <div style="display:flex; gap:10px;">
+              <span class="badge badge-coral" style="font-size:13px; padding:6px 14px;">5 Pending</span>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="patient-row">
+                <div class="patient-avatar">👤</div>
+                <div class="patient-info">
+                  <div class="patient-name">Arjun Kumar</div>
+                  <div class="patient-detail">Follow-up • Today 9:00 AM • ♂ 34 yrs • Diabetes</div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Opening patient file...','success')">📋 View</button>
+                  <button class="btn btn-primary btn-sm" onclick="showToast('Starting consultation...','success')">💬 Start</button>
+                  <button class="btn btn-outline btn-sm" onclick="showToast('Writing prescription...','success')">💊 Rx</button>
+                </div>
+              </div>
+              <div class="patient-row">
+                <div class="patient-avatar">👤</div>
+                <div class="patient-info">
+                  <div class="patient-name">Meera Nair</div>
+                  <div class="patient-detail">New Patient • Today 10:30 AM • ♀ 52 yrs • Chest pain</div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn btn-secondary btn-sm">📋 View</button>
+                  <button class="btn btn-primary btn-sm">💬 Start</button>
+                  <button class="btn btn-outline btn-sm">💊 Rx</button>
+                </div>
+              </div>
+              <div class="patient-row">
+                <div class="patient-avatar">👤</div>
+                <div class="patient-info">
+                  <div class="patient-name">Raj Sharma</div>
+                  <div class="patient-detail">ECG Review • Today 11:30 AM • ♂ 61 yrs • Hypertension</div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn btn-secondary btn-sm">📋 View</button>
+                  <button class="btn btn-primary btn-sm">💬 Start</button>
+                  <button class="btn btn-outline btn-sm">💊 Rx</button>
+                </div>
+              </div>
+              <div class="patient-row">
+                <div class="patient-avatar">👤</div>
+                <div class="patient-info">
+                  <div class="patient-name">Lakshmi Devi</div>
+                  <div class="patient-detail">Video Consult • Today 2:00 PM • ♀ 45 yrs • Palpitations</div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn btn-secondary btn-sm">📋 View</button>
+                  <button class="btn btn-primary btn-sm">📹 Video</button>
+                  <button class="btn btn-outline btn-sm">💊 Rx</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PATIENTS ── -->
+        <div class="section-panel" id="d-patients">
+          <div class="section-header">
+            <div><div class="section-title">Patient Records</div></div>
+          </div>
+          <div class="search-bar" style="margin-bottom:20px;">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Search patients by name, ID, or condition...">
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="patient-row">
+                <div class="patient-avatar">👤</div>
+                <div class="patient-info">
+                  <div class="patient-name">Arjun Kumar <span class="badge badge-teal" style="font-size:10px;">Active</span></div>
+                  <div class="patient-detail">ID: #MC2024087 • Age 34 • Type 2 Diabetes, Hypertension</div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn btn-secondary btn-sm" onclick="showToast('Opening full patient record...', 'success')">📋 Records</button>
+                  <button class="btn btn-primary btn-sm">📞 Call</button>
+                </div>
+              </div>
+              <div class="patient-row">
+                <div class="patient-avatar">👤</div>
+                <div class="patient-info">
+                  <div class="patient-name">Meera Nair <span class="badge badge-blue" style="font-size:10px;">New</span></div>
+                  <div class="patient-detail">ID: #MC2026001 • Age 52 • Chest pain evaluation</div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn btn-secondary btn-sm">📋 Records</button>
+                  <button class="btn btn-primary btn-sm">📞 Call</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PRESCRIPTIONS ── -->
+        <div class="section-panel" id="d-prescriptions">
+          <div class="section-header">
+            <div><div class="section-title">Prescriptions</div></div>
+            <button class="btn btn-primary" onclick="showToast('Opening prescription writer...','success')">✍️ New Prescription</button>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">✍️ Write Prescription</div></div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label">Patient</label>
+                  <select class="form-select"><option>Arjun Kumar</option><option>Meera Nair</option><option>Raj Sharma</option></select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Medicine Name</label>
+                  <input class="form-input" type="text" placeholder="e.g., Metformin 500mg">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Dosage & Instructions</label>
+                  <input class="form-input" type="text" placeholder="e.g., 1-0-1 after meals for 30 days">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Notes</label>
+                  <input class="form-input" type="text" placeholder="Additional instructions...">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="showToast('Prescription saved & sent to patient!', 'success')">💊 Save & Send Prescription</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">📋 Recent Prescriptions</div></div>
+              <div class="card-body">
+                <div class="record-row">
+                  <div class="record-icon-box">💊</div>
+                  <div class="record-info">
+                    <div class="record-name">Arjun Kumar</div>
+                    <div class="record-meta">Metformin + Lisinopril • Mar 20, 2026</div>
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn btn-outline btn-sm">⬇️</button>
+                  </div>
+                </div>
+                <div class="record-row">
+                  <div class="record-icon-box">💊</div>
+                  <div class="record-info">
+                    <div class="record-name">Raj Sharma</div>
+                    <div class="record-meta">Atorvastatin + Aspirin • Mar 18, 2026</div>
+                  </div>
+                  <div class="record-actions">
+                    <button class="btn btn-outline btn-sm">⬇️</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONSULT ── -->
+        <div class="section-panel" id="d-consult">
+          <div class="section-header"><div class="section-title">Online Consultation</div></div>
+          <div class="grid-2" style="margin-bottom:20px;">
+            <div class="consult-option" onclick="showToast('Chat interface opened for patient...','success')">
+              <div class="consult-icon">💬</div>
+              <div class="consult-title">Chat with Patient</div>
+              <div class="consult-desc">Send secure text messages to patients and answer their queries.</div>
+              <button class="btn btn-primary" style="margin-top:16px;">Open Chat</button>
+            </div>
+            <div class="consult-option" onclick="showToast('Starting video consultation...','success')">
+              <div class="consult-icon">📹</div>
+              <div class="consult-title">Video Call</div>
+              <div class="consult-desc">Face-to-face video consultation with patients. HD quality call.</div>
+              <button class="btn btn-primary" style="margin-top:16px;">Start Video Call</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── LOCATION ── -->
+        <div class="section-panel" id="d-location">
+          <div class="section-header"><div class="section-title">Clinic Location</div></div>
+          <div class="card">
+            <div class="card-body">
+              <div class="map-placeholder">
+                <div class="map-pin">📍</div>
+                <div class="map-icon" style="opacity:0.3;">🗺️</div>
+                <div class="map-text">Apollo Hospital, Coimbatore</div>
+                <div class="map-sub">21, Greams Lane, Off Greams Road</div>
+                <button class="btn btn-primary" style="margin-top:12px;" onclick="showToast('Opening Google Maps...','success')">🗺️ Open in Maps</button>
+              </div>
+              <div class="divider"></div>
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+                <div style="text-align:center;">
+                  <div style="font-size:20px; margin-bottom:6px;">🕐</div>
+                  <div style="font-size:13px; font-weight:700; color:var(--grey-900);">Clinic Hours</div>
+                  <div style="font-size:12px; color:var(--grey-500);">Mon–Sat: 9AM–6PM</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-size:20px; margin-bottom:6px;">📞</div>
+                  <div style="font-size:13px; font-weight:700; color:var(--grey-900);">Phone</div>
+                  <div style="font-size:12px; color:var(--teal);">0422-4345678</div>
+                </div>
+                <div style="text-align:center;">
+                  <div style="font-size:20px; margin-bottom:6px;">🅿️</div>
+                  <div style="font-size:13px; font-weight:700; color:var(--grey-900);">Parking</div>
+                  <div style="font-size:12px; color:var(--grey-500);">Free parking available</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PAYMENTS ── -->
+        <div class="section-panel" id="d-payments">
+          <div class="section-header"><div class="section-title">Payment Integration</div></div>
+          <div class="grid-2">
+            <div class="payment-card">
+              <div class="payment-label">Total Revenue This Month</div>
+              <div class="payment-amount">₹24,500</div>
+              <div style="font-size:12px; opacity:0.7; margin-bottom:20px;">↑ 8% vs last month</div>
+              <div style="display:flex; gap:10px; position:relative; z-index:1;">
+                <span class="badge" style="background:rgba(255,255,255,0.2); color:white;">Stripe ✓</span>
+                <span class="badge" style="background:rgba(255,255,255,0.2); color:white;">Razorpay ✓</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Recent Transactions</div></div>
+              <div class="card-body">
+                <div class="appt-item">
+                  <div style="font-size:22px;">✅</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Arjun Kumar</div>
+                    <div class="appt-detail">Consultation • Today</div>
+                  </div>
+                  <div style="font-weight:800; color:var(--emerald);">+₹500</div>
+                </div>
+                <div class="appt-item">
+                  <div style="font-size:22px;">✅</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Meera Nair</div>
+                    <div class="appt-detail">ECG Analysis • Yesterday</div>
+                  </div>
+                  <div style="font-weight:800; color:var(--emerald);">+₹300</div>
+                </div>
+                <div class="appt-item">
+                  <div style="font-size:22px;">⏳</div>
+                  <div class="appt-info">
+                    <div class="appt-name">Raj Sharma</div>
+                    <div class="appt-detail">Video Consult • Pending</div>
+                  </div>
+                  <div style="font-weight:800; color:var(--amber);">₹400</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONTACT ── -->
+        <div class="section-panel" id="d-contact">
+          <div class="section-header"><div class="section-title">Contact</div></div>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><div class="card-title">📬 Patient Contact Form</div></div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label class="form-label">Patient Name</label>
+                  <input class="form-input" type="text" placeholder="Full name">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone Number</label>
+                  <input class="form-input" type="tel" placeholder="+91 XXXXX XXXXX">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Message</label>
+                  <input class="form-input" type="text" placeholder="Your message...">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="showToast('Message sent to patient!', 'success')">📤 Send Message</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">📞 Quick Contact</div></div>
+              <div class="card-body">
+                <div style="display:flex; flex-direction:column; gap:12px;">
+                  <button class="btn btn-primary btn-full" onclick="showToast('Calling patient...','success')">📞 Call Patient</button>
+                  <button class="btn btn-secondary btn-full" onclick="showToast('Opening WhatsApp...','success')">💬 WhatsApp</button>
+                  <button class="btn btn-outline btn-full" onclick="showToast('Sending email...','success')">📧 Send Email</button>
+                  <button class="btn btn-secondary btn-full" onclick="showToast('Sending SMS...','success')">📱 Send SMS</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content-area -->
+    </div><!-- /main-content -->
+  </div><!-- /dashboard-layout -->
+</div><!-- /doctor-page -->
+
+
+<script>
+// ─── STATE ───
+let currentRole = 'patient';
+let currentLang = 'en';
+
+const langs = {
+  en: { label: '🌐 English ▾', name: 'English' },
+  ta: { label: '🌐 தமிழ் ▾', name: 'Tamil' },
+  hi: { label: '🌐 हिंदी ▾', name: 'Hindi' },
+  fr: { label: '🌐 Français ▾', name: 'French' },
+  de: { label: '🌐 Deutsch ▾', name: 'German' },
+  ar: { label: '🌐 عربى ▾', name: 'Arabic' }
+};
+
+// ─── LANGUAGE ───
+function toggleLang() {
+  document.getElementById('langDropdown').classList.toggle('open');
+}
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelector('.lang-btn').textContent = langs[lang].label;
+  document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+  document.getElementById('langDropdown').classList.remove('open');
+  showToast(`Language changed to ${langs[lang].name}`, 'success');
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.lang-btn') && !e.target.closest('.lang-dropdown')) {
+    document.getElementById('langDropdown').classList.remove('open');
+  }
+});
+
+// ─── ROLE SELECTION ───
+function selectRole(role) {
+  currentRole = role;
+  document.getElementById('patientRoleCard').classList.toggle('selected', role === 'patient');
+  document.getElementById('doctorRoleCard').classList.toggle('selected', role === 'doctor');
+  
+  if (role === 'patient') {
+    document.getElementById('formTitle').textContent = 'Patient Login';
+    document.getElementById('formSubtitle').textContent = 'Welcome back! Access your health dashboard.';
+    document.getElementById('loginEmail').value = 'patient@medi.com';
+  } else {
+    document.getElementById('formTitle').textContent = 'Doctor Login';
+    document.getElementById('formSubtitle').textContent = 'Welcome, Doctor! Manage your patients & appointments.';
+    document.getElementById('loginEmail').value = 'doctor@medi.com';
+  }
+}
+
+// ─── LOGIN ───
+function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPassword').value;
+  
+  if (!email || !pass) {
+    showToast('Please enter your credentials', 'error');
+    return;
+  }
+  
+  showToast('Signing in...', 'success');
+  
+  setTimeout(() => {
+    document.getElementById('login-page').classList.remove('active');
+    
+    if (currentRole === 'doctor' || email.includes('doctor')) {
+      document.getElementById('doctor-page').classList.add('active');
+    } else {
+      document.getElementById('patient-page').classList.add('active');
+    }
+    showToast('Welcome! Login successful ✓', 'success');
+  }, 800);
+}
+
+function logout() {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('login-page').classList.add('active');
+  showToast('Signed out successfully', 'success');
+}
+
+// Allow Enter key login
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && document.getElementById('login-page').classList.contains('active')) {
+    doLogin();
+  }
+});
+
+// ─── SECTION NAVIGATION ───
+function showSection(id) {
+  document.querySelectorAll('#patient-page .section-panel').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  
+  document.querySelectorAll('#patient-page .nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget && event.currentTarget.classList.add('active');
+  
+  const titles = {
+    'p-dashboard': 'Dashboard', 'p-records': 'Health Records', 'p-doctors': 'Find Doctors',
+    'p-appointments': 'Book Appointment', 'p-medicines': 'Medicines', 'p-diet': 'Diet & Nutrition',
+    'p-chatbot': 'AI Doctor', 'p-consult': 'Online Consultation', 'p-emergency': '🚨 Emergency'
+  };
+  document.getElementById('patientPageTitle').textContent = titles[id] || 'Dashboard';
+  window.scrollTo(0, 0);
+}
+
+function showDoctorSection(id) {
+  document.querySelectorAll('#doctor-page .section-panel').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  
+  document.querySelectorAll('#doctor-page .nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget && event.currentTarget.classList.add('active');
+  
+  const titles = {
+    'd-home': 'Doctor Dashboard', 'd-about': 'About Me', 'd-services': 'Services',
+    'd-appointments': 'Appointment Management', 'd-patients': 'Patient Records',
+    'd-prescriptions': 'Prescriptions', 'd-consult': 'Online Consultation',
+    'd-location': 'Clinic Location', 'd-payments': 'Payments', 'd-contact': 'Contact'
+  };
+  document.getElementById('doctorPageTitle').textContent = titles[id] || 'Dashboard';
+  window.scrollTo(0, 0);
+}
+
+// ─── TOAST ───
+function showToast(msg, type = '') {
+  const icons = { success: '✅', error: '⚠️', '': 'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+// ─── MOBILE SIDEBAR ───
+function toggleSidebar(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ─── MODALS ───
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ─── DOCTOR CARDS ───
+function filterDoctors(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── TIME SLOTS ───
+function selectSlot(el) {
+  if (el.classList.contains('unavailable')) return;
+  document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ─── FOOD MODAL ───
+function showFoodModal(emoji, name, data) {
+  document.getElementById('foodModalEmoji').textContent = emoji;
+  document.getElementById('foodModalName').textContent = name;
+  
+  const max = { protein: 30, carbs: 60, fiber: 10, fat: 20 };
+  const prot = parseFloat(data.protein);
+  const carbs = parseFloat(data.carbs);
+  const fiber = parseFloat(data.fiber);
+  const fat = parseFloat(data.fat);
+  
+  document.getElementById('foodModalBody').innerHTML = `
+    <div style="text-align:center; padding:14px 0; border-bottom:1px solid var(--grey-100); margin-bottom:18px;">
+      <div style="font-size:64px;">${emoji}</div>
+      <div style="font-size:28px; font-weight:800; color:var(--teal-dark); margin:8px 0 2px;">${data.cal} <span style="font-size:16px; font-weight:400; color:var(--grey-500);">kcal</span></div>
+      <div style="font-size:12px; color:var(--grey-500);">per 100g serving</div>
+      <div style="margin-top:10px;"><span class="badge ${data.glycemic.includes('Low') ? 'badge-green' : data.glycemic.includes('High') ? 'badge-coral' : 'badge-amber'}">GI: ${data.glycemic}</span></div>
+    </div>
+    <div class="nutrition-bar">
+      <div class="nutrition-label"><span>Protein</span><span>${data.protein}</span></div>
+      <div class="nutrition-track"><div class="nutrition-fill" style="width:${Math.min(100,(prot/max.protein)*100)}%"></div></div>
+    </div>
+    <div class="nutrition-bar">
+      <div class="nutrition-label"><span>Carbohydrates</span><span>${data.carbs}</span></div>
+      <div class="nutrition-track"><div class="nutrition-fill" style="width:${Math.min(100,(carbs/max.carbs)*100)}%; background:linear-gradient(90deg,var(--amber),#fde68a)"></div></div>
+    </div>
+    <div class="nutrition-bar">
+      <div class="nutrition-label"><span>Dietary Fiber</span><span>${data.fiber}</span></div>
+      <div class="nutrition-track"><div class="nutrition-fill" style="width:${Math.min(100,(fiber/max.fiber)*100)}%; background:linear-gradient(90deg,#16a34a,#4ade80)"></div></div>
+    </div>
+    <div class="nutrition-bar">
+      <div class="nutrition-label"><span>Total Fat</span><span>${data.fat}</span></div>
+      <div class="nutrition-track"><div class="nutrition-fill" style="width:${Math.min(100,(fat/max.fat)*100)}%; background:linear-gradient(90deg,#dc2626,#f87171)"></div></div>
+    </div>
+  `;
+  openModal('foodModal');
+}
+
+// ─── AI CHATBOT ───
+const botReplies = {
+  headache: "Headaches can have many causes — stress, dehydration, lack of sleep, or eye strain. For tension headaches, rest, hydration, and over-the-counter pain relievers often help. If headaches are severe or frequent, I'd recommend booking an appointment with a neurologist. 🧠",
+  diabetes: "For Type 2 diabetes management: monitor blood sugar regularly, follow a low-GI diet, exercise 30 mins daily, and take medications as prescribed. Avoid sugary drinks and processed foods. Your sugar level of 98 mg/dL looks healthy! 🩸",
+  diet: "As a diabetic patient, focus on: ✅ Green vegetables, lean proteins, whole grains, nuts. Avoid: ❌ White rice, sugary foods, processed carbs. Small frequent meals help maintain stable sugar levels. Check the Diet section for personalized recommendations! 🥗",
+  bp: "Your blood pressure reading of 120/80 mmHg is in the normal range. To maintain healthy BP: reduce sodium intake, exercise regularly, manage stress, limit alcohol, and take medications as prescribed. If BP rises above 140/90, consult Dr. Johnson. ❤️",
+  "chest pain": "⚠️ Chest pain can be serious! If you're experiencing severe chest pain, call emergency services (108) immediately. Mild chest pain can be due to muscle strain, acidity, or anxiety. Please don't ignore persistent chest pain — book a consultation right away.",
+  fever: "For mild fever (below 101°F): rest, stay hydrated, take paracetamol as needed. For fever above 103°F, rash, or difficulty breathing, seek immediate medical attention. Monitor for 24-48 hours and consult if it persists. 🌡️",
+  doctor: "You can find and book appointments with specialists in the 'Find Doctors' section. Filter by specialty, location, and availability. Online consultations (chat and video) are also available instantly! 👨‍⚕️",
+  emergency: "🚨 If you have an emergency, please use the Emergency button in the sidebar or press the red 🆘 button! It will connect you to ambulance (108), your relatives, and your doctor immediately.",
+};
+
+function sendChatMsg() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  
+  const msgs = document.getElementById('chatMessages');
+  
+  // User bubble
+  msgs.innerHTML += `<div class="chat-msg user"><div class="chat-msg-avatar">👤</div><div class="chat-bubble">${msg}</div></div>`;
+  input.value = '';
+  
+  // Typing indicator
+  const typingId = 'typing_' + Date.now();
+  msgs.innerHTML += `<div class="chat-msg bot" id="${typingId}"><div class="chat-msg-avatar">🤖</div><div class="chat-bubble" style="color:var(--grey-300)">● ● ●</div></div>`;
+  msgs.scrollTop = msgs.scrollHeight;
+  
+  setTimeout(() => {
+    document.getElementById(typingId)?.remove();
+    
+    const lower = msg.toLowerCase();
+    let reply = "Thanks for your question! I'd recommend consulting with your doctor for personalized medical advice. You can book an appointment or start an online consultation through the app. 😊 Is there anything else I can help with?";
+    
+    for (const [key, val] of Object.entries(botReplies)) {
+      if (lower.includes(key)) { reply = val; break; }
+    }
+    
+    msgs.innerHTML += `<div class="chat-msg bot"><div class="chat-msg-avatar">🤖</div><div class="chat-bubble">${reply}</div></div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 1200);
+}
+
+// Init
+selectRole('patient');
+</script>
+</body>
+</html>
